@@ -23,7 +23,13 @@ class CommentController extends Controller
                 $comment->user_parent_id=$parent_id->user_id;
                 $comment->save();
             }
-            return back();
-        }
+ // Retrieve the comment with the associated user
+ $commentWithUser = Comment::with('users')->find($comment->id);
+
+ return response()->json([
+     'success' => true,
+     'message' => 'Comment posted successfully!',
+     'comment' => $commentWithUser
+ ]);        }
     }
 }

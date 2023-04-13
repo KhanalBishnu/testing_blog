@@ -59,7 +59,7 @@
                                     </div>
                                     <button type="submit" class="btn btn-primary">Post</button>
                                 </form>
-                                <div class="comments">
+                                {{-- <div class="comments">
                                     @foreach($postItem->comments as $comment)
                                         <div class="comment">
                                             <p>{{ $comment->comment }}</p>
@@ -72,7 +72,7 @@
                                             @endif
                                         </div>
                                     @endforeach
-                                </div>
+                                </div> --}}
                             </div>
 
                 </div>
@@ -152,4 +152,30 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(event) {
+                event.preventDefault();
+                var comment = $('#comment').val();
+                var postId = $(this).data('post-id');
+                $.ajax({
+                    type: 'POST',
+                    url: '/home/comment/' + postId,
+                    data: {comment: comment, _token: '{{ csrf_token() }}'},
+                    success: function(data) {
+                        $('#comment-section').prepend('<div class="comment">' +
+                            '<p>' + comment + '</p>' +
+                            '<p>By ' + data.user_name + '</p>' +
+                            '</div>');
+                        $('#comment').val('');
+                        $('#message').html('Comment posted successfully.');
+                    },
+                    error: function(data) {
+                        $('#message').html('Error posting comment.');
+                    }
+                });
+            });
+        });
+        </script>
+
 @endsection
